@@ -7,3 +7,5 @@ generated/
 antlr-*.jar
 .vscode/
 .idea/
+
+src/gramatica/generated/

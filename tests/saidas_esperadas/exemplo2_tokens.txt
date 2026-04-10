@@ -1,0 +1,61 @@
+# Saída esperada do Analisador Léxico — Exemplo 2
+# Arquivo fonte: exemplo2_laco.minilang
+# Gerado por: main_lexer.py
+# =====================================================
+# Código fonte:
+#
+#   # Le 10 numeros e calcula a soma
+#   var i: int
+#   var soma: float
+#   soma = 0.0
+#
+#   para i de 1 ate 10 faca
+#     var x: float
+#     leia(x)
+#     soma = soma + x
+#   fim
+#
+#   escreva(soma)
+# =====================================================
+
+<VAR,var>                      (linha 2)
+<IDENT,i>                      (linha 2)
+<COLON,:>                      (linha 2)
+<INT_TYPE,int>                 (linha 2)
+<VAR,var>                      (linha 3)
+<IDENT,soma>                   (linha 3)
+<COLON,:>                      (linha 3)
+<FLOAT_TYPE,float>             (linha 3)
+<IDENT,soma>                   (linha 4)
+<ASSIGN,=>                     (linha 4)
+<FLOAT_LIT,0.0>                (linha 4)
+<PARA,para>                    (linha 6)
+<IDENT,i>                      (linha 6)
+<DE,de>                        (linha 6)
+<INT_LIT,1>                    (linha 6)
+<ATE,ate>                      (linha 6)
+<INT_LIT,10>                   (linha 6)
+<FACA,faca>                    (linha 6)
+<VAR,var>                      (linha 7)
+<IDENT,x>                      (linha 7)
+<COLON,:>                      (linha 7)
+<FLOAT_TYPE,float>             (linha 7)
+<LEIA,leia>                    (linha 8)
+<LPAREN,(>                     (linha 8)
+<IDENT,x>                      (linha 8)
+<RPAREN,)>                     (linha 8)
+<IDENT,soma>                   (linha 9)
+<ASSIGN,=>                     (linha 9)
+<IDENT,soma>                   (linha 9)
+<PLUS,+>                       (linha 9)
+<IDENT,x>                      (linha 9)
+<FIM,fim>                      (linha 10)
+<ESCREVA,escreva>              (linha 12)
+<LPAREN,(>                     (linha 12)
+<IDENT,soma>                   (linha 12)
+<RPAREN,)>                     (linha 12)
+
+# =====================================================
+# Total de tokens: 36
+# Erros léxicos:   0
+# =====================================================

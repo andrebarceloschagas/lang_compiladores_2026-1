@@ -1,0 +1,67 @@
+# Saída esperada do Analisador Léxico — Exemplo 1
+# Arquivo fonte: exemplo1_fatorial.minilang
+# Gerado por: main_lexer.py
+# =====================================================
+# Código fonte:
+#
+#   # Calcula o fatorial de um numero
+#   funcao fatorial(n: int): int
+#     se (n <= 1) entao
+#       retorne 1
+#     fim
+#     retorne n * fatorial(n - 1)
+#   fim
+#
+#   var resultado: int
+#   resultado = fatorial(5)
+#   escreva(resultado)
+# =====================================================
+
+<FUNCAO,funcao>                (linha 2)
+<IDENT,fatorial>               (linha 2)
+<LPAREN,(>                     (linha 2)
+<IDENT,n>                      (linha 2)
+<COLON,:>                      (linha 2)
+<INT_TYPE,int>                 (linha 2)
+<RPAREN,)>                     (linha 2)
+<COLON,:>                      (linha 2)
+<INT_TYPE,int>                 (linha 2)
+<SE,se>                        (linha 3)
+<LPAREN,(>                     (linha 3)
+<IDENT,n>                      (linha 3)
+<LEQ,<=>                       (linha 3)
+<INT_LIT,1>                    (linha 3)
+<RPAREN,)>                     (linha 3)
+<ENTAO,entao>                  (linha 3)
+<RETORNE,retorne>              (linha 4)
+<INT_LIT,1>                    (linha 4)
+<FIM,fim>                      (linha 5)
+<RETORNE,retorne>              (linha 6)
+<IDENT,n>                      (linha 6)
+<STAR,*>                       (linha 6)
+<IDENT,fatorial>               (linha 6)
+<LPAREN,(>                     (linha 6)
+<IDENT,n>                      (linha 6)
+<MINUS,->                      (linha 6)
+<INT_LIT,1>                    (linha 6)
+<RPAREN,)>                     (linha 6)
+<FIM,fim>                      (linha 7)
+<VAR,var>                      (linha 9)
+<IDENT,resultado>              (linha 9)
+<COLON,:>                      (linha 9)
+<INT_TYPE,int>                 (linha 9)
+<IDENT,resultado>              (linha 10)
+<ASSIGN,=>                     (linha 10)
+<IDENT,fatorial>               (linha 10)
+<LPAREN,(>                     (linha 10)
+<INT_LIT,5>                    (linha 10)
+<RPAREN,)>                     (linha 10)
+<ESCREVA,escreva>              (linha 11)
+<LPAREN,(>                     (linha 11)
+<IDENT,resultado>              (linha 11)
+<RPAREN,)>                     (linha 11)
+
+# =====================================================
+# Total de tokens: 44
+# Erros léxicos:   0
+# =====================================================
