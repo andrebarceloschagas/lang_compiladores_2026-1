@@ -1,0 +1,39 @@
+# exemplo4_erro_sintatico.minilang
+# Arquivo de teste para verificar o tratamento de erros sintáticos.
+# Este programa contém erros INTENCIONAIS para validar as mensagens
+# de erro do parser.
+#
+# Erros presentes:
+#   1. Linha 6:  falta o 'entao' após a condição do 'se'
+#   2. Linha 11: falta o 'fim' para fechar o bloco 'se'
+#   3. Linha 15: atribuição sem o lado direito da expressão
+#   4. Linha 19: chamada de função com vírgula sobrando (trailing comma)
+
+# ── Erro 1: 'entao' ausente ───────────────────────────────────
+var x: int
+x = 10
+
+se (x > 0)          # ERRO: falta 'entao' aqui
+  escreva(x)
+fim
+
+# ── Erro 2: 'fim' ausente ────────────────────────────────────
+var y: int
+y = 5
+
+se (y == 5) entao
+  escreva(y)
+               # ERRO: falta 'fim' aqui
+
+# ── Erro 3: expressão incompleta ─────────────────────────────
+var z: int
+z =            # ERRO: falta a expressão do lado direito
+
+# ── Erro 4: trailing comma em chamada de função ───────────────
+funcao soma(a: int, b: int): int
+  retorne a + b
+fim
+
+var resultado: int
+resultado = soma(3, 4,)    # ERRO: virgula extra antes do ')'
+escreva(resultado)
