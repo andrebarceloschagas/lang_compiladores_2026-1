@@ -123,6 +123,7 @@ x = 10  # comentário ao final de uma linha
 ## 5. Operadores
 
 ### Aritméticos
+
 | Operador | Descrição     |
 |----------|---------------|
 | `+`      | Adição        |
@@ -131,6 +132,7 @@ x = 10  # comentário ao final de uma linha
 | `/`      | Divisão       |
 
 ### Relacionais
+
 | Operador | Descrição      |
 |----------|----------------|
 | `==`     | Igual          |
@@ -141,12 +143,14 @@ x = 10  # comentário ao final de uma linha
 | `>=`     | Maior ou igual |
 
 ### Lógicos
+
 | Operador | Descrição  |
 |----------|------------|
 | `e`      | E lógico   |
 | `ou`     | OU lógico  |
 
 ### Precedência (maior para menor)
+
 1. `( )` — agrupamento
 2. `-` unário
 3. `*`, `/`

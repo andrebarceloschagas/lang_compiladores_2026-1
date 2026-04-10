@@ -1,0 +1,111 @@
+(* ============================================================
+   MiniLang — Gramática Formal (EBNF)
+   Disciplina: Compiladores | UFT — Palmas/TO
+   Notação: Extended Backus-Naur Form (ISO/IEC 14977)
+
+   Convenções:
+     ::=   define uma regra
+     { }   zero ou mais repetições
+     [ ]   opcional (zero ou uma vez)
+     ( )   agrupamento
+      |    alternativa
+     " "   símbolo terminal (token literal)
+     MAIÚSCULAS = token definido no léxico
+   ============================================================ *)
+
+
+(* ── Programa ─────────────────────────────────────────────── *)
+
+program      ::= { declaration | statement } EOF
+
+
+(* ── Declarações ──────────────────────────────────────────── *)
+
+declaration  ::= var_decl
+               | func_decl
+
+var_decl     ::= "var" IDENT ":" type
+
+func_decl    ::= "funcao" IDENT "(" params ")" ":" type
+                   block
+                 "fim"
+
+params       ::= [ IDENT ":" type { "," IDENT ":" type } ]
+
+
+(* ── Tipos ────────────────────────────────────────────────── *)
+
+type         ::= "int"
+               | "float"
+               | "bool"
+               | "string"
+
+
+(* ── Bloco e Comandos ─────────────────────────────────────── *)
+
+block        ::= { statement }
+
+statement    ::= assignment
+               | if_stmt
+               | while_stmt
+               | for_stmt
+               | return_stmt
+               | io_stmt
+               | func_call
+
+assignment   ::= IDENT "=" expression
+
+if_stmt      ::= "se" "(" expression ")" "entao"
+                   block
+                 [ "senao"
+                   block ]
+                 "fim"
+
+while_stmt   ::= "enquanto" "(" expression ")" "faca"
+                   block
+                 "fim"
+
+for_stmt     ::= "para" IDENT "de" expression "ate" expression "faca"
+                   block
+                 "fim"
+
+return_stmt  ::= "retorne" expression
+
+io_stmt      ::= "escreva" "(" expression ")"
+               | "leia"    "(" IDENT       ")"
+
+func_call    ::= IDENT "(" [ expression { "," expression } ] ")"
+
+
+(* ── Expressões (precedência crescente de cima para baixo) ── *)
+
+expression   ::= comparison { ( "e" | "ou" ) comparison }
+
+comparison   ::= arith { ( "<" | ">" | "<=" | ">=" | "==" | "!=" ) arith }
+
+arith        ::= term { ( "+" | "-" ) term }
+
+term         ::= unary { ( "*" | "/" ) unary }
+
+unary        ::= "-" unary
+               | primary
+
+primary      ::= NUMBER_INT
+               | NUMBER_FLOAT
+               | STRING
+               | "verdadeiro"
+               | "falso"
+               | func_call
+               | IDENT
+               | "(" expression ")"
+
+
+(* ── Tokens Terminais (definidos no léxico) ──────────────── *)
+
+(*
+  IDENT        = [a-zA-Z_][a-zA-Z0-9_]*
+  NUMBER_INT   = [0-9]+
+  NUMBER_FLOAT = [0-9]+ '.' [0-9]+
+  STRING       = '"' [^"]* '"'
+  EOF          = fim do arquivo
+*)
