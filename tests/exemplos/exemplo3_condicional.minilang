@@ -1,0 +1,14 @@
+# Verifica se a pessoa e maior de idade
+
+var idade: int
+var maior: bool
+
+leia(idade)
+
+se (idade >= 18) entao
+  maior = verdadeiro
+  escreva("Maior de idade")
+senao
+  maior = falso
+  escreva("Menor de idade")
+fim

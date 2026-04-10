@@ -1,0 +1,12 @@
+# Calcula o fatorial de um numero
+
+funcao fatorial(n: int): int
+  se (n <= 1) entao
+    retorne 1
+  fim
+  retorne n * fatorial(n - 1)
+fim
+
+var resultado: int
+resultado = fatorial(5)
+escreva(resultado)    # Saida esperada: 120
