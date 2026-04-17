@@ -1,79 +1,77 @@
 """
+main_parser.py — Testador do Analisador Sintático da MiniLang
+Disciplina: Compiladores | UFT — Palmas/TO
+
 Pré-requisitos:
-    pip install antlr4-python3-runtime==4.13.1
-    java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -visitor -o generated MiniLang.g4
+    java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -visitor -o src/gramatica/generated src/gramatica/MiniLang.g4
 
 Uso:
-    python main_parser.py exemplo1_fatorial.minilang
-    python main_parser.py exemplo1_fatorial.minilang --salvar saida_ast.txt
-    python main_parser.py exemplo4_erro_sintatico.minilang   # exibe erros
+    python src/parser/main_parser.py tests/exemplos/exemplo1_fatorial.minilang
+    python src/parser/main_parser.py tests/exemplos/exemplo1_fatorial.minilang --ast
+    python src/parser/main_parser.py tests/exemplos/exemplo4_erro_sintatico.minilang
 """
 
 import sys
 import os
 import argparse
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'gramatica', 'generated'))
+# Caminho absoluto até a pasta generated
+BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
+GENERATED = os.path.normpath(os.path.join(BASE_DIR, '..', 'gramatica', 'generated'))
+sys.path.insert(0, GENERATED)
 
 from antlr4 import CommonTokenStream, InputStream
 from antlr4.error.ErrorListener import ErrorListener
 
 try:
-    from MiniLangLexer import MiniLangLexer
+    from MiniLangLexer  import MiniLangLexer
     from MiniLangParser import MiniLangParser
-except ImportError:
-    print("ERRO: Arquivos gerados pelo ANTLR não encontrados.")
-    print("Execute primeiro:")
-    print("  java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -visitor -o generated MiniLang.g4")
+except ImportError as e:
+    print(f"ERRO: Arquivos gerados pelo ANTLR não encontrados: {e}")
+    print("Execute primeiro (a partir da raiz do projeto):")
+    print("  java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -visitor -o src/gramatica/generated src/gramatica/MiniLang.g4")
     sys.exit(1)
 
 from ast_printer import ASTPrinter
 
 
-# ── Listener de erros customizado ────────────────────────────
+# ── Coletor de erros sintáticos ──────────────────────────────
 
-class MiniLangErrorListener(ErrorListener):
+class ColetorDeErros(ErrorListener):
     def __init__(self):
         super().__init__()
         self.erros = []
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-        erro = f"[ERRO SINTÁTICO] linha {line}:{column} — {msg}"
-        self.erros.append(erro)
-        print(erro, file=sys.stderr)
+        self.erros.append(f"  Linha {line}:{column} — {msg}")
 
 
 # ── Parsing ───────────────────────────────────────────────────
 
-def parsear(codigo: str, nome_arquivo: str = "<stdin>"):
-    """
-    Retorna (arvore_parse, lista_de_erros).
-    """
+def parsear(codigo: str):
     entrada = InputStream(codigo)
     lexer   = MiniLangLexer(entrada)
     lexer.removeErrorListeners()
 
-    error_listener = MiniLangErrorListener()
-    lexer.addErrorListener(error_listener)
-
     stream = CommonTokenStream(lexer)
     parser = MiniLangParser(stream)
     parser.removeErrorListeners()
-    parser.addErrorListener(error_listener)
 
-    # Ponto de entrada: regra 'program'
-    arvore = parser.program()
+    coletor = ColetorDeErros()
+    parser.addErrorListener(coletor)
 
-    return arvore, error_listener.erros
+    tree = parser.program()
+    return tree, parser, coletor.erros
 
 
 # ── Main ──────────────────────────────────────────────────────
 
 def main():
-    ap = argparse.ArgumentParser(description="Analisador Sintático da MiniLang")
-    ap.add_argument("arquivo", help="Arquivo .minilang de entrada")
-    ap.add_argument("--salvar", metavar="SAIDA", help="Salvar AST em arquivo .txt")
-    args = ap.parse_args()
+    arg_parser = argparse.ArgumentParser(description="Analisador Sintático — MiniLang")
+    arg_parser.add_argument("arquivo",          help="Arquivo .minilang de entrada")
+    arg_parser.add_argument("--ast",            action="store_true", help="Exibir a AST formatada")
+    arg_parser.add_argument("--salvar",         metavar="SAIDA",     help="Salvar AST em arquivo .txt")
+    args = arg_parser.parse_args()
 
     if not os.path.exists(args.arquivo):
         print(f"ERRO: Arquivo '{args.arquivo}' não encontrado.", file=sys.stderr)
@@ -82,31 +80,36 @@ def main():
     with open(args.arquivo, encoding="utf-8") as f:
         codigo = f.read()
 
-    sep = "=" * 60
-    print(sep)
+    print(f"{'='*60}")
     print(f"  Analisador Sintático — MiniLang")
     print(f"  Arquivo : {args.arquivo}")
-    print(sep)
+    print(f"{'='*60}")
 
-    arvore, erros = parsear(codigo, args.arquivo)
+    tree, parser, erros = parsear(codigo)
 
     if erros:
-        print(f"\n  {len(erros)} erro(s) sintático(s) encontrado(s).")
-        print(sep)
-        sys.exit(1)
+        print(f"\n❌  Parsing FALHOU — {len(erros)} erro(s) sintático(s):\n")
+        for e in erros:
+            print(e)
+        print()
+    else:
+        print(f"\n✅  Parsing concluído com sucesso — nenhum erro sintático.\n")
 
-    printer   = ASTPrinter()
-    saida_ast = printer.imprimir(arvore)
+    if args.ast or args.salvar:
+        printer = ASTPrinter()
+        ast_str = printer.imprimir(tree, parser)
 
-    print(saida_ast)
-    print(sep)
-    print("  Análise sintática concluída sem erros.")
-    print(sep)
+        if args.ast:
+            print("── AST ──────────────────────────────────────────────────")
+            print(ast_str)
+            print()
 
-    if args.salvar:
-        with open(args.salvar, "w", encoding="utf-8") as f:
-            f.write(saida_ast + "\n")
-        print(f"\n  AST salva em: {args.salvar}")
+        if args.salvar:
+            with open(args.salvar, "w", encoding="utf-8") as f:
+                f.write(ast_str + "\n")
+            print(f"AST salva em: {args.salvar}")
+
+    print(f"{'='*60}")
 
 
 if __name__ == "__main__":

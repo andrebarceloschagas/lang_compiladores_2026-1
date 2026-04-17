@@ -4,46 +4,44 @@ Disciplina: Compiladores | UFT — Palmas/TO
 
 Pré-requisitos:
     pip install antlr4-python3-runtime==4.13.1
-    java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -o generated MiniLangLexer.g4
+    java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -o src/gramatica/generated src/gramatica/MiniLangLexer.g4
 
 Uso:
-    python main_lexer.py exemplo1_fatorial.minilang
-    python main_lexer.py exemplo1_fatorial.minilang --salvar saida.txt
+    python src/lexer/main_lexer.py tests/exemplos/exemplo1_fatorial.minilang
+    python src/lexer/main_lexer.py tests/exemplos/exemplo1_fatorial.minilang --salvar saida.txt
 """
 
 import sys
 import os
 import argparse
 
-# Adiciona a pasta generated ao path para importar os arquivos gerados pelo ANTLR
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'gramatica', 'generated'))
+# Caminho absoluto até a pasta generated, independente de onde o script é chamado
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+GENERATED = os.path.join(BASE_DIR, '..', 'gramatica', 'generated')
+sys.path.insert(0, os.path.normpath(GENERATED))
 
 from antlr4 import CommonTokenStream, InputStream
 
 try:
-    from MiniLangLexerLexer import MiniLangLexerLexer
+    # ANTLR gera o arquivo com o mesmo nome da grammar: MiniLangLexer.py
+    from MiniLangLexer import MiniLangLexer
 except ImportError:
     print("ERRO: Arquivos gerados pelo ANTLR não encontrados.")
-    print("Execute primeiro:")
-    print("  java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -o generated MiniLangLexer.g4")
+    print("Execute primeiro (a partir da raiz do projeto):")
+    print("  java -jar antlr-4.13.1-complete.jar -Dlanguage=Python3 -o src/gramatica/generated src/gramatica/MiniLangLexer.g4")
     sys.exit(1)
 
 
-def tokenizar(codigo: str, nome_arquivo: str = "<stdin>") -> list[dict]:
-    """
-    Recebe o código-fonte como string e retorna a lista de tokens
-    no formato: [ { 'tipo': str, 'lexema': str, 'linha': int } ]
-    """
+def tokenizar(codigo: str, nome_arquivo: str = "<stdin>") -> list:
     entrada = InputStream(codigo)
-    lexer   = MiniLangLexerLexer(entrada)
+    lexer   = MiniLangLexer(entrada)
     stream  = CommonTokenStream(lexer)
     stream.fill()
 
-    nomes  = lexer.symbolicNames   # mapeia tipo numérico → nome do token
+    nomes  = lexer.symbolicNames
     tokens = []
 
     for tok in stream.tokens:
-        # Ignora o token EOF
         if tok.type == -1:
             break
 
@@ -51,32 +49,28 @@ def tokenizar(codigo: str, nome_arquivo: str = "<stdin>") -> list[dict]:
         lexema = tok.text
         linha  = tok.line
 
-        # Verifica erro léxico
         if tipo == 'ERRO':
-            print(f"[ERRO LÉXICO] Caractere inesperado '{lexema}' na linha {linha} de '{nome_arquivo}'",
-                  file=sys.stderr)
+            print(f"[ERRO LÉXICO] Caractere inesperado '{lexema}' na linha {linha}", file=sys.stderr)
 
-        tokens.append({ 'tipo': tipo, 'lexema': lexema, 'linha': linha })
+        tokens.append({'tipo': tipo, 'lexema': lexema, 'linha': linha})
 
     return tokens
 
 
-def formatar_saida(tokens: list[dict]) -> str:
-    """Formata a lista de tokens no padrão <TIPO,lexema>  (linha N)"""
+def formatar_saida(tokens: list) -> str:
     linhas = []
     for tok in tokens:
         entrada = f"<{tok['tipo']},{tok['lexema']}>"
-        linhas.append(f"{entrada:<30}  (linha {tok['linha']})")
+        linhas.append(f"{entrada:<35}  (linha {tok['linha']})")
     return "\n".join(linhas)
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Analisador Léxico da MiniLang")
+    parser = argparse.ArgumentParser(description="Analisador Léxico — MiniLang")
     parser.add_argument("arquivo", help="Arquivo .minilang de entrada")
     parser.add_argument("--salvar", metavar="SAIDA", help="Salvar saída em arquivo .txt")
     args = parser.parse_args()
 
-    # Lê o arquivo de entrada
     if not os.path.exists(args.arquivo):
         print(f"ERRO: Arquivo '{args.arquivo}' não encontrado.", file=sys.stderr)
         sys.exit(1)
@@ -84,20 +78,19 @@ def main():
     with open(args.arquivo, encoding="utf-8") as f:
         codigo = f.read()
 
-    print(f"{'='*55}")
+    print(f"{'='*57}")
     print(f"  Analisador Léxico — MiniLang")
     print(f"  Arquivo: {args.arquivo}")
-    print(f"{'='*55}")
+    print(f"{'='*57}")
 
     tokens = tokenizar(codigo, args.arquivo)
     saida  = formatar_saida(tokens)
 
     print(saida)
-    print(f"{'='*55}")
+    print(f"{'='*57}")
     print(f"  Total de tokens: {len(tokens)}")
-    print(f"{'='*55}")
+    print(f"{'='*57}")
 
-    # Salva em arquivo se solicitado
     if args.salvar:
         with open(args.salvar, "w", encoding="utf-8") as f:
             f.write(saida + "\n")
