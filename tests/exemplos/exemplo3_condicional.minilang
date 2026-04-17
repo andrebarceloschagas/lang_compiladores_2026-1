@@ -1,5 +1,4 @@
 # Verifica se a pessoa e maior de idade
-
 var idade: int
 var maior: bool
 

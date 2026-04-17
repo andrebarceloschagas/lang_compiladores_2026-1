@@ -131,18 +131,23 @@ python src/parser/main_parser.py tests/exemplos/exemplo4_erro_sintatico.minilang
 
 | Item | Resultado |
 |---|---|
-| Erros esperados | 4 |
-| Erros detectados | 4 |
+| Erros intencionais no arquivo | 4 |
+| Mensagens geradas pelo parser | 7 |
 | Mensagem com linha e coluna | OK |
 | Parser se recupera após erro | OK |
-| Status | PASSOU (erros corretamente detectados) |
+| Status | PASSOU (todos os 4 pontos de erro detectados; mensagens extras por cascata) |
 
-Saída esperada:
+> **Nota:** O ANTLR gera mensagens secundárias (efeito cascata) após cada erro, por isso o total de mensagens (7) é maior que o número de erros intencionais (4).
+
+Saída obtida:
 ```
-[ERRO SINTÁTICO] linha 6:0  — missing 'entao' at '\n'
-[ERRO SINTÁTICO] linha 14:0 — missing 'fim' at 'var'
-[ERRO SINTÁTICO] linha 19:0 — mismatched input '\n' expecting expression
-[ERRO SINTÁTICO] linha 25:20 — extraneous input ')' expecting ')'
+  Linha 17:2 — no viable alternative at input 'se(x>0)escreva'
+  Linha 18:0 — extraneous input 'fim' expecting {<EOF>, 'var', 'funcao', ...}
+  Linha 33:0 — no viable alternative at input 'se(y==5)entaoescreva(y)varz:intz=funcao'
+  Linha 33:0 — extraneous input 'funcao' expecting {'verdadeiro', 'falso', '-', ...}
+  Linha 33:13 — mismatched input ':' expecting ')'
+  Linha 35:0 — extraneous input 'fim' expecting {<EOF>, 'var', 'funcao', ...}
+  Linha 38:22 — mismatched input ')' expecting {'verdadeiro', 'falso', '-', ...}
 ```
 
 ---

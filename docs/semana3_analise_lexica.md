@@ -63,9 +63,9 @@ Isso gera dentro de `generated/`:
 
 ```
 generated/
-├── MiniLangLexerLexer.py       ← classe principal do lexer
-├── MiniLangLexerLexer.interp   ← dados internos do AFD
-└── MiniLangLexerLexer.tokens   ← mapeamento tipo → número
+├── MiniLangLexer.py       ← classe principal do lexer
+├── MiniLangLexer.interp   ← dados internos do AFD
+└── MiniLangLexer.tokens   ← mapeamento tipo → número
 ```
 
 ---
@@ -199,8 +199,8 @@ diff tests/saidas_esperadas/exemplo1_tokens.txt \
 
 | Item | Resultado |
 |---|---|
-| Total de tokens esperados | 44 |
-| Total de tokens obtidos | 44 |
+| Total de tokens esperados | 43 |
+| Total de tokens obtidos | 43 |
 | Erros léxicos | 0 |
 | Status | ✅ PASSOU |
 

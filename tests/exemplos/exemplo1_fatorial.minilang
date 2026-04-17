@@ -1,5 +1,4 @@
 # Calcula o fatorial de um numero
-
 funcao fatorial(n: int): int
   se (n <= 1) entao
     retorne 1

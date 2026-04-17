@@ -61,7 +61,7 @@ def formatar_saida(tokens: list) -> str:
     linhas = []
     for tok in tokens:
         entrada = f"<{tok['tipo']},{tok['lexema']}>"
-        linhas.append(f"{entrada:<35}  (linha {tok['linha']})")
+        linhas.append(f"{entrada:<30} (linha {tok['linha']})")
     return "\n".join(linhas)
 
 
