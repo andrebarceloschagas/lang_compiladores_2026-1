@@ -1,0 +1,21 @@
+Program
+├── VarDecl: idade : int
+├── VarDecl: maior : bool
+├── Leia: idade
+└── IfElseStmt
+    ├── Cond:
+    │   └── BinOp(>=)
+    │       ├── Ident(idade)
+    │       └── Int(18)
+    ├── Then:
+    │   └── Block
+    │       ├── Assign: maior
+    │       │   └── Bool(verdadeiro)
+    │       └── Escreva
+    │           └── Str("Maior de idade")
+    └── Else:
+        └── Block
+            ├── Assign: maior
+            │   └── Bool(falso)
+            └── Escreva
+                └── Str("Menor de idade")

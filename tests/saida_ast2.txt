@@ -1,0 +1,20 @@
+Program
+├── VarDecl: i : int
+├── VarDecl: soma : float
+├── Assign: soma
+│   └── Float(0.0)
+├── ForStmt: i
+│   ├── De:
+│   │   └── Int(1)
+│   ├── Ate:
+│   │   └── Int(10)
+│   └── Body:
+│       └── Block
+│           ├── VarDecl: x : float
+│           ├── Leia: x
+│           └── Assign: soma
+│               └── BinOp(+)
+│                   ├── Ident(soma)
+│                   └── Ident(x)
+└── Escreva
+    └── Ident(soma)

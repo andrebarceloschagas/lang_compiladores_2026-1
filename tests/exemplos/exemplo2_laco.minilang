@@ -1,0 +1,12 @@
+# Le 10 numeros e calcula a soma
+var i: int
+var soma: float
+soma = 0.0
+
+para i de 1 ate 10 faca
+  var x: float
+  leia(x)
+  soma = soma + x
+fim
+
+escreva(soma)

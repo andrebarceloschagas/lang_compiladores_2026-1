@@ -1,0 +1,138 @@
+; ============================================================
+; MiniLang — Gramática Formal (BNF)
+; Disciplina: Compiladores | UFT — Palmas/TO
+; Notação: Backus-Naur Form
+;
+; Convenções:
+;   ::=        define uma regra de produção
+;    |         alternativa
+;   <nome>     símbolo não-terminal
+;   "token"    símbolo terminal (token literal)
+;   id         token IDENT  (identificador)
+;   num_int    token NUMBER_INT
+;   num_float  token NUMBER_FLOAT
+;   str        token STRING
+;   ε          cadeia vazia (produção vazia)
+; ============================================================
+
+
+; ── Programa ─────────────────────────────────────────────────
+
+<program>      ::= <decl-list>
+
+<decl-list>    ::= <decl> <decl-list>
+               | <decl>
+
+<decl>         ::= <var-decl>
+               | <func-decl>
+               | <stmt>
+
+
+; ── Declarações ──────────────────────────────────────────────
+
+<var-decl>     ::= "var" id ":" <type>
+
+<func-decl>    ::= "funcao" id "(" <params> ")" ":" <type> <block> "fim"
+
+<params>       ::= <param-list>
+               | ε
+
+<param-list>   ::= id ":" <type>
+               | id ":" <type> "," <param-list>
+
+
+; ── Tipos ─────────────────────────────────────────────────────
+
+<type>         ::= "int"
+               | "float"
+               | "bool"
+               | "string"
+
+
+; ── Bloco e Comandos ──────────────────────────────────────────
+
+<block>        ::= <stmt-list>
+               | ε
+
+<stmt-list>    ::= <stmt> <stmt-list>
+               | <stmt>
+
+<stmt>         ::= <assignment>
+               | <if-stmt>
+               | <while-stmt>
+               | <for-stmt>
+               | <return-stmt>
+               | <io-stmt>
+               | <func-call>
+
+<assignment>   ::= id "=" <expr>
+
+<if-stmt>      ::= "se" "(" <expr> ")" "entao" <block> "fim"
+               | "se" "(" <expr> ")" "entao" <block> "senao" <block> "fim"
+
+<while-stmt>   ::= "enquanto" "(" <expr> ")" "faca" <block> "fim"
+
+<for-stmt>     ::= "para" id "de" <expr> "ate" <expr> "faca" <block> "fim"
+
+<return-stmt>  ::= "retorne" <expr>
+
+<io-stmt>      ::= "escreva" "(" <expr> ")"
+               | "leia" "(" id ")"
+
+<func-call>    ::= id "(" <arg-list> ")"
+               | id "(" ")"
+
+<arg-list>     ::= <expr>
+               | <expr> "," <arg-list>
+
+
+; ── Expressões ────────────────────────────────────────────────
+;
+; Nota: as regras abaixo usam recursão à esquerda para expressar
+; corretamente a associatividade à esquerda dos operadores.
+; Na implementação com ANTLR 4, isso é resolvido automaticamente.
+
+<expr>         ::= <expr> "+" <term>
+               | <expr> "-" <term>
+               | <term>
+
+<term>         ::= <term> "*" <factor>
+               | <term> "/" <factor>
+               | <factor>
+
+<factor>       ::= "-" <factor>
+               | <primary>
+
+<primary>      ::= id
+               | num_int
+               | num_float
+               | str
+               | "verdadeiro"
+               | "falso"
+               | <func-call>
+               | "(" <expr> ")"
+
+
+; ── Expressões Relacionais e Lógicas ─────────────────────────
+
+<rel-expr>     ::= <expr> <rel-op> <expr>
+               | <expr>
+
+<rel-op>       ::= "=="
+               | "!="
+               | "<"
+               | ">"
+               | "<="
+               | ">="
+
+<log-expr>     ::= <log-expr> "e"  <rel-expr>
+               | <log-expr> "ou" <rel-expr>
+               | <rel-expr>
+
+
+; ── Tokens Terminais ──────────────────────────────────────────
+;
+;   id        = [a-zA-Z_][a-zA-Z0-9_]*
+;   num_int   = [0-9]+
+;   num_float = [0-9]+ '.' [0-9]+
+;   str       = '"' [^"]* '"'

@@ -1,0 +1,61 @@
+# Saída esperada do Analisador Léxico — Exemplo 3
+# Arquivo fonte: exemplo3_condicional.minilang
+# Gerado por: main_lexer.py
+# =====================================================
+# Código fonte:
+#
+#   # Verifica se a pessoa e maior de idade
+#   var idade: int
+#   var maior: bool
+#
+#   leia(idade)
+#
+#   se (idade >= 18) entao
+#     maior = verdadeiro
+#     escreva("Maior de idade")
+#   senao
+#     maior = falso
+#     escreva("Menor de idade")
+#   fim
+# =====================================================
+
+<VAR,var>                      (linha 2)
+<IDENT,idade>                  (linha 2)
+<COLON,:>                      (linha 2)
+<INT_TYPE,int>                 (linha 2)
+<VAR,var>                      (linha 3)
+<IDENT,maior>                  (linha 3)
+<COLON,:>                      (linha 3)
+<BOOL_TYPE,bool>               (linha 3)
+<LEIA,leia>                    (linha 5)
+<LPAREN,(>                     (linha 5)
+<IDENT,idade>                  (linha 5)
+<RPAREN,)>                     (linha 5)
+<SE,se>                        (linha 7)
+<LPAREN,(>                     (linha 7)
+<IDENT,idade>                  (linha 7)
+<GEQ,>=>                       (linha 7)
+<INT_LIT,18>                   (linha 7)
+<RPAREN,)>                     (linha 7)
+<ENTAO,entao>                  (linha 7)
+<IDENT,maior>                  (linha 8)
+<ASSIGN,=>                     (linha 8)
+<VERDADEIRO,verdadeiro>        (linha 8)
+<ESCREVA,escreva>              (linha 9)
+<LPAREN,(>                     (linha 9)
+<STR_LIT,"Maior de idade">     (linha 9)
+<RPAREN,)>                     (linha 9)
+<SENAO,senao>                  (linha 10)
+<IDENT,maior>                  (linha 11)
+<ASSIGN,=>                     (linha 11)
+<FALSO,falso>                  (linha 11)
+<ESCREVA,escreva>              (linha 12)
+<LPAREN,(>                     (linha 12)
+<STR_LIT,"Menor de idade">     (linha 12)
+<RPAREN,)>                     (linha 12)
+<FIM,fim>                      (linha 13)
+
+# =====================================================
+# Total de tokens: 35
+# Erros léxicos:   0
+# =====================================================

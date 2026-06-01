@@ -1,0 +1,50 @@
+# AST esperada — Exemplo 1
+# Arquivo fonte: exemplo1_fatorial.minilang
+# Gerado por: main_parser.py
+# =====================================================
+# Código fonte:
+#
+#   funcao fatorial(n: int): int
+#     se (n <= 1) entao
+#       retorne 1
+#     fim
+#     retorne n * fatorial(n - 1)
+#   fim
+#
+#   var resultado: int
+#   resultado = fatorial(5)
+#   escreva(resultado)
+# =====================================================
+
+Program
+├── FuncDecl: fatorial : int
+│   ├── Params
+│   │   └── Param: n : int
+│   └── Block
+│       ├── IfStmt
+│       │   ├── Cond:
+│       │   │   └── BinOp(<=)
+│       │   │       ├── Ident(n)
+│       │   │       └── Int(1)
+│       │   └── Then:
+│       │       └── Block
+│       │           └── ReturnStmt
+│       │               └── Int(1)
+│       └── ReturnStmt
+│           └── BinOp(*)
+│               ├── Ident(n)
+│               └── FuncCall: fatorial
+│                   ├── BinOp(-)
+│                   │   ├── Ident(n)
+│                   │   └── Int(1)
+├── VarDecl: resultado : int
+├── Assign: resultado
+│   └── FuncCall: fatorial
+│       └── Int(5)
+└── Escreva
+    └── Ident(resultado)
+
+# =====================================================
+# Nós na AST: 28
+# Erros sintáticos: 0
+# =====================================================
