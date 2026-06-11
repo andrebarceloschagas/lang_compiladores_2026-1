@@ -18,7 +18,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from MiniLangLexer import MiniLangLexer
 from MiniLangParser import MiniLangParser
 from parser.ast_printer import ASTPrinter
-from parser.transpilador import MiniLangCompiler
+from compiler.transpilador import MiniLangCompiler
 from compiler.semantic_analyzer import SemanticAnalyzer
 
 
@@ -55,7 +55,8 @@ def salvar_tokens(arquivo, destino):
 
 
 def parsear(arquivo):
-    codigo = open(arquivo, encoding='utf-8').read()
+    with open(arquivo, encoding='utf-8') as f:
+        codigo = f.read()
     entrada = InputStream(codigo)
     lexer = MiniLangLexer(entrada)
     stream = CommonTokenStream(lexer)

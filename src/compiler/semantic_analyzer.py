@@ -70,20 +70,23 @@ class SemanticAnalyzer(MiniLangVisitor):
         return False
 
     def visitProgram(self, ctx):
+        P = MiniLangParser
+
         # Definir declarações globais e assinaturas de funções primeiro
         for child in ctx.getChildren():
             if isinstance(child, ParserRuleContext):
-                if hasattr(child, 'varDecl') and child.varDecl():
-                    self.visit(child.varDecl())
-                elif hasattr(child, 'funcDecl') and child.funcDecl():
-                    self._declare_function(child.funcDecl())
+                if isinstance(child, P.DeclarationContext):
+                    if child.varDecl():
+                        self.visit(child.varDecl())
+                    elif child.funcDecl():
+                        self._declare_function(child.funcDecl())
 
         # Em seguida, visitar o corpo para validar declarações e expressões
         for child in ctx.getChildren():
             if isinstance(child, ParserRuleContext):
-                if hasattr(child, 'funcDecl') and child.funcDecl():
+                if isinstance(child, P.DeclarationContext) and child.funcDecl():
                     self.visit(child.funcDecl())
-                elif hasattr(child, 'statement') and child.statement():
+                elif isinstance(child, P.StatementContext):
                     self.visit(child)
         return None
 
